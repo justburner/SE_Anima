@@ -47,5 +47,4 @@ For more info how to do this please check in documentation.
 
 Digi - For telling me about the exposed MyEntity on Mod API and helping me a lot.
 
-Harag - For his excellent work on the "SE Block Tools for Blender"
-        http://harag-on-steam.github.io/se-blender/
+Harag - For his excellent work on the "SE Block Tools for Blender" at http://harag-on-steam.github.io/se-blender/
