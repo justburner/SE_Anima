@@ -8,6 +8,8 @@ Requires Blender 2.70 or up for exporting animations.
 
 GitHub available at: https://github.com/JustBurn/SE_Anima
 
+Example available at: http://steamcommunity.com/sharedfiles/filedetails/?id=594962470
+
 ## Features ##
 
 * Export animations in Blender and include the exported sequence into your mod.
