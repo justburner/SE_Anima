@@ -196,7 +196,7 @@ namespace AnimaScript
         }
 
         /// <summary>
-        /// Add part for animation.
+        /// Add anima part for animation.
         /// </summary>
         /// <param name="parent">parent part, null for root.</param>
         /// <param name="modelFile">Model file name inside Models folder, excluding extension.</param>
@@ -216,9 +216,39 @@ namespace AnimaScript
             part_entity.Render.PersistentFlags = MyPersistentEntityFlags2.CastShadows;
             part_entity.PositionComp.LocalMatrix = Matrix.Identity;
             part_entity.Flags = EntityFlags.Visible | EntityFlags.NeedsDraw | EntityFlags.NeedsDrawFromParent | EntityFlags.InvalidateOnMove;
-            part_entity.OnAddedToScene(parent);
+            part_entity.OnAddedToScene(parentEntity);
 
             AnimaPart part = new AnimaPart(this, parent, part_entity);
+            if (!visible) part.Visible = false;
+            m_partList.Add(part);
+            return part;
+        }
+
+        /// <summary>
+        /// Add anima part for animation, parent will be one of root's subpart.
+        /// </summary>
+        /// <param name="subpartName">root subpart name.</param>
+        /// <param name="modelFile">Model file name inside Models folder, excluding extension.</param>
+        /// <param name="smoothAnim">smooth animation, linear lerp between keyframes.</param>
+        /// <param name="visible">initialize it visible?</param>
+        /// <returns>part or null for failure.</returns>
+        public AnimaPart AddPartToSubpart(string subpartName, string modelFile, bool smoothAnim = false, bool visible = true)
+        {
+            if (m_entity == null) return null;
+            if (!m_entity.Subparts.ContainsKey(subpartName)) return null;
+
+            // Create part
+            MyEntity parentEntity = m_entity.Subparts[subpartName];
+            MyEntity part_entity = new MyEntity();
+            part_entity.Init(null, m_modelsFolder + modelFile + ".mwm", parentEntity, null, null);
+            part_entity.Render.EnableColorMaskHsv = true;
+            part_entity.Render.ColorMaskHsv = m_entity.Render.ColorMaskHsv;
+            part_entity.Render.PersistentFlags = MyPersistentEntityFlags2.CastShadows;
+            part_entity.PositionComp.LocalMatrix = Matrix.Identity;
+            part_entity.Flags = EntityFlags.Visible | EntityFlags.NeedsDraw | EntityFlags.NeedsDrawFromParent | EntityFlags.InvalidateOnMove;
+            part_entity.OnAddedToScene(parentEntity);
+
+            AnimaPart part = new AnimaPart(this, null, part_entity);
             if (!visible) part.Visible = false;
             m_partList.Add(part);
             return part;
@@ -412,6 +442,7 @@ namespace AnimaScript
         /// <summary>
         /// Get parent part.
         /// </summary>
+        /// <remarks>returns null if parent is root or subpart.</remarks>
         public AnimaPart Parent
         {
             get { return m_parent; }
