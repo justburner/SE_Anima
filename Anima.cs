@@ -790,23 +790,13 @@ namespace AnimaScript
             // Get keyframe and apply transformation
             AnimaSeqBase.Keyframe sframe;
             m_lastCursorPos = (int)m_cursorPos;
-            if (!m_seq.GetKeyframeData(m_lastCursorPos, out sframe))
-            {
-                m_playMode = Anima.Playback.HALT;
-                m_playMode2 = Anima.Playback.HALT;
-                return;
-            }
+            m_seq.GetKeyframeData(m_lastCursorPos, out sframe);
 
             // Smooth animation
             if (m_smoothAnim)
             {
                 AnimaSeqBase.Keyframe sframe2;
-                if (!m_seq.GetKeyframeData(m_lastCursorPos + 1, out sframe2))
-                {
-                    m_playMode = Anima.Playback.HALT;
-                    m_playMode2 = Anima.Playback.HALT;
-                    return;
-                }
+                m_seq.GetKeyframeData(m_lastCursorPos + 1, out sframe2);
                 float lerpValue = m_cursorPos - (float)m_lastCursorPos;
                 sframe.position = Vector3.Lerp(sframe.position, sframe2.position, lerpValue);
                 sframe.rotation = Quaternion.Lerp(sframe.rotation, sframe2.rotation, lerpValue);
@@ -952,19 +942,12 @@ namespace AnimaScript
         /// </summary>
         /// <param name="keyframe">keyframe</param>
         /// <param name="data">output of data</param>
-        /// <returns>true on success</returns>
-        public bool GetKeyframeData(int keyframe, out AnimaSeqBase.Keyframe data)
+        public void GetKeyframeData(int keyframe, out AnimaSeqBase.Keyframe data)
         {
-            if (m_kEnd == 0)
-            {
-                // No data! Shouldn't happen!
-                data = new AnimaSeqBase.Keyframe();
-                return false;
-            }
             if (keyframe < m_kStart) keyframe = m_kStart;
             if (keyframe > m_kEnd) keyframe = m_kEnd;
             data = m_keyframes[keyframe - m_kStart];
-            return true;
+            return;
         }
 
         /// <summary>
