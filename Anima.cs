@@ -1,4 +1,4 @@
-/*
+﻿/*
 The MIT License (MIT)
 
 Copyright (c) 2016 JustBurn
@@ -32,6 +32,7 @@ using Sandbox.Game.Entities;
 using VRage.ObjectBuilders;
 using VRageMath;
 using VRage.ModAPI;
+using VRage.Game.Entity;
 using VRage.Library.Utils;
 //using VRage.FileSystem;
 
@@ -89,6 +90,15 @@ namespace AnimaScript
         {
             m_instances--;
             if (m_instances <= 0) AnimaSeqManager.DiscardAll();
+        }
+
+        /// <summary>
+        /// Script version.
+        /// </summary>
+        public struct Version
+        {
+            public const int Major = 0;
+            public const int Minor = 4;
         }
 
         /// <summary>
@@ -228,7 +238,7 @@ namespace AnimaScript
         /// Add anima part for animation, parent will be one of root's subpart.
         /// </summary>
         /// <param name="subpartName">root subpart name.</param>
-        /// <param name="modelFile">Model file name inside Models folder, excluding extension.</param>
+        /// <param name="modelFile">>Model file name inside Models folder, excluding extension.</param>
         /// <param name="smoothAnim">smooth animation, linear lerp between keyframes.</param>
         /// <param name="visible">initialize it visible?</param>
         /// <returns>part or null for failure.</returns>
@@ -790,13 +800,23 @@ namespace AnimaScript
             // Get keyframe and apply transformation
             AnimaSeqBase.Keyframe sframe;
             m_lastCursorPos = (int)m_cursorPos;
-            m_seq.GetKeyframeData(m_lastCursorPos, out sframe);
+            if (!m_seq.GetKeyframeData(m_lastCursorPos, out sframe))
+            {
+                m_playMode = Anima.Playback.HALT;
+                m_playMode2 = Anima.Playback.HALT;
+                return;
+            }
 
             // Smooth animation
             if (m_smoothAnim)
             {
                 AnimaSeqBase.Keyframe sframe2;
-                m_seq.GetKeyframeData(m_lastCursorPos + 1, out sframe2);
+                if (!m_seq.GetKeyframeData(m_lastCursorPos + 1, out sframe2))
+                {
+                    m_playMode = Anima.Playback.HALT;
+                    m_playMode2 = Anima.Playback.HALT;
+                    return;
+                }
                 float lerpValue = m_cursorPos - (float)m_lastCursorPos;
                 sframe.position = Vector3.Lerp(sframe.position, sframe2.position, lerpValue);
                 sframe.rotation = Quaternion.Lerp(sframe.rotation, sframe2.rotation, lerpValue);
@@ -942,12 +962,19 @@ namespace AnimaScript
         /// </summary>
         /// <param name="keyframe">keyframe</param>
         /// <param name="data">output of data</param>
-        public void GetKeyframeData(int keyframe, out AnimaSeqBase.Keyframe data)
+        /// <returns>true on success</returns>
+        public bool GetKeyframeData(int keyframe, out AnimaSeqBase.Keyframe data)
         {
+            if (m_kEnd == 0)
+            {
+                // No data! Shouldn't happen!
+                data = new AnimaSeqBase.Keyframe();
+                return false;
+            }
             if (keyframe < m_kStart) keyframe = m_kStart;
             if (keyframe > m_kEnd) keyframe = m_kEnd;
             data = m_keyframes[keyframe - m_kStart];
-            return;
+            return true;
         }
 
         /// <summary>

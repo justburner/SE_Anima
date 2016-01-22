@@ -1,6 +1,12 @@
 Change Log {#changelog}
 ==========
 
+v0.4 (22 Jan 2016)
+------------------
+
+* Fixed refactoring from game's patch 1.118
+* Added version property
+
 v0.3 (16 Jan 2016)
 ------------------
 
