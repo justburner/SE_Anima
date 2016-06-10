@@ -2,21 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Sandbox.Common.Components;
 using Sandbox.Common.ObjectBuilders;
 using Sandbox.Game.Entities;
 using Sandbox.ModAPI;
 using VRageMath;
 using VRage.ModAPI;
 using VRage.ObjectBuilders;
+using VRage.Game;
 using VRage.Game.Components;
 using VRage.Game.Entity;
+using VRage.Game.ModAPI;
+using SpaceEngineers.Game.ModAPI;
 using AnimaScript;
 using AnimaData;
 
 namespace AnimaExamples.Example2
 {
-    using BlockModAPIType = /*( Mod API Block Type )*/ Sandbox.ModAPI.Ingame.IMyGravityGenerator;
+    using BlockModAPIType = /*( Mod API Block Type )*/ SpaceEngineers.Game.ModAPI.Ingame.IMyGravityGenerator;
     [MyEntityComponentDescriptor(typeof(/*( Object Builder Type )*/ MyObjectBuilder_GravityGenerator), /*( Block name to link with gamelogic )*/ "AnimaExample2")]
     public class /*( Name of the gamelogic class )*/ AnimaExample2_Logic : MyGameLogicComponent
     {
