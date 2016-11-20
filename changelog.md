@@ -1,6 +1,13 @@
 Change Log {#changelog}
 ==========
 
+v0.5 (20 Nov 2016)
+------------------
+
+* Replaced destructor with Dispose(), without this change the mod will not load on latest game patch
+* Disabled save and multiplayer sync on parts (Thanks DraygoKorvan)
+* Documentation is now in HTML format only
+
 v0.4 (22 Jan 2016)
 ------------------
 

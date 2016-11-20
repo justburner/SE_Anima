@@ -83,13 +83,6 @@ namespace AnimaScript
             m_inRange = true;
             m_gameTimer = new MyGameTimer();
             m_lastElapse = m_gameTimer.Elapsed.Seconds;
-            m_instances++;
-        }
-
-        ~Anima()
-        {
-            m_instances--;
-            if (m_instances <= 0) AnimaSeqManager.DiscardAll();
         }
 
         /// <summary>
@@ -97,8 +90,10 @@ namespace AnimaScript
         /// </summary>
         public struct Version
         {
+            /// <summary>Major version.</summary>
             public const int Major = 0;
-            public const int Minor = 4;
+            /// <summary>Minor version.</summary>
+            public const int Minor = 5;
         }
 
         /// <summary>
@@ -145,6 +140,14 @@ namespace AnimaScript
         }
 
         /// <summary>
+        /// Return number of instrances (FOR DEBUGGING)
+        /// </summary>
+        public int Instances
+        {
+            get { return m_instances; }
+        }
+
+        /// <summary>
         /// Return elapsed time in seconds since last call to GetElapsed().
         /// </summary>
         public double GetElapsed()
@@ -166,6 +169,7 @@ namespace AnimaScript
         public bool Init(MyEntity entity, string modName, string altModName)
         {
             if (entity == null) return false;
+            if (m_entity != null) return false;
 
             // Scan for publisher ID
             ulong publishID = 0;
@@ -202,7 +206,19 @@ namespace AnimaScript
 
             // Done!
             m_entity = entity;
+            m_instances++;
             return true;
+        }
+
+        /// <summary>
+        /// Dispose unused resources (mostly animation sequences)
+        /// </summary>
+        public void Dispose()
+        {
+            if (m_entity == null) return;
+
+            m_instances--;
+            if (m_instances <= 0) AnimaSeqManager.DiscardAll();
         }
 
         /// <summary>
@@ -220,6 +236,8 @@ namespace AnimaScript
             // Create part
             MyEntity parentEntity = (parent != null) ? parent.Entity : m_entity;
             MyEntity part_entity = new MyEntity();
+            part_entity.Save = false;
+            part_entity.IsPreview = true;
             part_entity.Init(null, m_modelsFolder + modelFile + ".mwm", parentEntity, null, null);
             part_entity.Render.EnableColorMaskHsv = true;
             part_entity.Render.ColorMaskHsv = m_entity.Render.ColorMaskHsv;
@@ -250,6 +268,8 @@ namespace AnimaScript
             // Create part
             MyEntity parentEntity = m_entity.Subparts[subpartName];
             MyEntity part_entity = new MyEntity();
+            part_entity.Save = false;
+            part_entity.IsPreview = true;
             part_entity.Init(null, m_modelsFolder + modelFile + ".mwm", parentEntity, null, null);
             part_entity.Render.EnableColorMaskHsv = true;
             part_entity.Render.ColorMaskHsv = m_entity.Render.ColorMaskHsv;

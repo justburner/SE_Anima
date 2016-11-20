@@ -16,10 +16,11 @@ using SpaceEngineers.Game.ModAPI;
 using AnimaScript;
 using AnimaData;
 
-namespace AnimaExamples.Example1
+namespace /*(Your personal namespace)*/ AnimaExamples.Example1
 {
     using BlockModAPIType = /*( Mod API Block Type )*/ Sandbox.ModAPI.IMyTerminalBlock;
-    [MyEntityComponentDescriptor(typeof(/*( Object Builder Type )*/ MyObjectBuilder_TerminalBlock), /*( Block name to link with gamelogic )*/ "AnimaExample1")]
+    [MyEntityComponentDescriptor(typeof(/*( Object Builder Type )*/ MyObjectBuilder_TerminalBlock),
+    /*( Block name to link with gamelogic )*/ "AnimaExample1")]
     public class /*( Name of the gamelogic class )*/ AnimaExample1_Logic : MyGameLogicComponent
     {
         // ( Your variables here! )
@@ -70,9 +71,19 @@ namespace AnimaExamples.Example1
             }
         }
 
+        // Your block termination
+        public void BlockTerm()
+        {
+            // ( Your termination code here! )
+
+            // Free up resources
+            m_anima.Dispose();
+        }
+
         // There's no reason to change code below unless you know what you're doing!
 
         private BlockModAPIType block;
+        private IMyEntity blockent;
         private bool active = false;
 
         // Gamelogic initialization
@@ -81,7 +92,8 @@ namespace AnimaExamples.Example1
             // Update each frame, note this may not work for all object's types!
             Entity.NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
 
-            block = Entity as BlockModAPIType;
+            blockent = Entity;
+            block = blockent as BlockModAPIType;
             if (block == null || MyAPIGateway.Session == null) return;
 
             BlockInit();
@@ -93,13 +105,14 @@ namespace AnimaExamples.Example1
         public override void UpdateAfterSimulation()
         {
             if (!active) Init(null);
-            if (!active || block == null || block.MarkedForClose || block.Closed) return;
+            if (!active || block == null || blockent.MarkedForClose || blockent.Closed) return;
             BlockUpdate();
         }
 
         // Gamelogic close when the block gets deleted
         public override void Close()
         {
+            BlockTerm();
             block = null;
         }
 
