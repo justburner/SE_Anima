@@ -1,5 +1,9 @@
 # Space Engineers - Anima Script #
 
+**WARNING**: This script is *deprecated* and may or may not work with latest version of Space Engineers.
+
+I don't play Space Engineers anymore so i won't be providing any patches in the future.
+
 ## Parts animation script for Space Engineers ##
 
 This script allow SE Blocks to playback an animation, the animation is restricted to object's tranformations along a timeline.
@@ -33,9 +37,7 @@ Example available at: http://steamcommunity.com/sharedfiles/filedetails/?id=5949
 
 ## Documentation ##
 
-Documentation is available by opening `Anima.chm`.
-
-HTML documentation may be available if requested.
+Documentation is available by opening `Documentation/html/index.html` with your browser.
 
 ## How to install it ##
 
